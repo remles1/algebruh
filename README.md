@@ -5,4 +5,4 @@ Features: <br />
 Coming: <br />
 -inverse matrix <br />
 -rank of a matrix <br />
--kernel and image of lineaar transformation
+-kernel and image of a linear transformation
