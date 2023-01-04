@@ -1,7 +1,7 @@
 Features:
 -Gauss elimination <br />
--Determinant
-<br />
+-Determinant <br />
+
 Coming:
 -inverse matrix <br />
 -rank of a matrix <br />
