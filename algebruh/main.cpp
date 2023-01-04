@@ -1,11 +1,13 @@
+//TODO odwracanie macierzy, sprawdzanie rzedu, jadro i obraz
 #include <iostream>
 #include <vector>
 #include <stdlib.h>
 using namespace std;
-//test
+
 vector<vector<double>> matrix = {};
 int i_dim = 0;
 int j_dim = 0;
+int matrix_sign = 1;
 
 
 vector<double> add(vector<double> v, vector<double> u);
@@ -17,9 +19,9 @@ void gauss();
 vector<vector<double>> gauss(vector<vector<double>> m);
 void determinant();
 void save(vector<vector<double>> m);
+vector<vector<double>> cleanup_matrix(vector<vector<double>> m);
 
-
-int main(){ //TODO zamiana wierszy miejscami i pilnowanie przy tym wyznacznika (sortowanie) && odwracanie macierzy, sprawdzanie rzedu, jadro i obraz
+int main(){
     create_matrix();
     for(;;){
         cout << "1. List the matrix in memory\n2. Gauss\n3. Determinant\n0. Type in new matrix\n";
@@ -104,26 +106,58 @@ void create_matrix(){
     matrix = m;
 }
 
-void gauss(){
+void gauss() {
     vector<vector<double>> m = matrix;
 
-    for(int i = 0;i<(i_dim - 1);i++){
-        for(int j = i_dim - 1; j > i; j--){ 
-            double ratio = m[j][i]/m[i][i];
-            m[j] = add(scalar_mul(m[i],ratio*-1),m[j]);
+    int place = i_dim - 1;
+    for (int i = 0; i < (i_dim - 1); i++) {
+        for (int j = i_dim - 1; j > i; j--) {
+            if (m[i][i] == 0) {
+                vector<double> temp = m[i];
+                m[i] = m[place];
+                m[place] = temp;
+                place -= 1;
+            }
+            double ratio = m[j][i] / m[i][i];
+            m[j] = add(scalar_mul(m[i], ratio * -1), m[j]);
         }
+        place = i_dim - 1;
     }
+    m = cleanup_matrix(m);
     list_matrix(m);
 }
 
-vector<vector<double>> gauss(vector<vector<double>> m){
+//void gauss(){
+//    vector<vector<double>> m = matrix;
+//
+//
+//    for(int i = 0;i<(i_dim - 1);i++){
+//        for(int j = i_dim - 1; j > i; j--){ 
+//            double ratio = m[j][i]/m[i][i];
+//            m[j] = add(scalar_mul(m[i],ratio*-1),m[j]);
+//        }
+//    }
+//    list_matrix(m);
+//}
 
-    for(int i = 0;i<(i_dim - 1);i++){
-        for(int j = i_dim - 1; j > i; j--){ 
-            double ratio = m[j][i]/m[i][i];
-            m[j] = add(scalar_mul(m[i],ratio*-1),m[j]);
+vector<vector<double>> gauss(vector<vector<double>> m){ //used to calculate the determinant, changes matrix_sign accordingly
+
+    int place = i_dim - 1;
+    for (int i = 0; i < (i_dim - 1); i++) {
+        for (int j = i_dim - 1; j > i; j--) {
+            if (m[i][i] == 0) {
+                vector<double> temp = m[i];
+                m[i] = m[place];
+                m[place] = temp;
+                place -= 1;
+                matrix_sign *= -1;
+            }
+            double ratio = m[j][i] / m[i][i];
+            m[j] = add(scalar_mul(m[i], ratio * -1), m[j]);
         }
+        place = i_dim - 1;
     }
+    m = cleanup_matrix(m);
     return m;
 }
 
@@ -133,11 +167,22 @@ void determinant(){
     for(int i = 0;i<i_dim;i++){
         det *= m[i][i];
     }
-    cout << "Determinant equals: " << det << "\n";
-    
+    cout << "Determinant equals: " << det * matrix_sign<< "\n";
+    matrix_sign = 1;
     
 }
 
 void save(vector<vector<double>> m){
     matrix = m;
+}
+
+vector<vector<double>> cleanup_matrix(vector<vector<double>> m) {
+    for (int i = 0; i < i_dim; i++) {
+        for (int j = 0; j < j_dim; j++) {
+            if (isnan(m[i][j])) {
+                m[i][j] = 0;
+            }
+        }
+    }
+    return m;
 }
