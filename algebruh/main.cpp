@@ -15,8 +15,10 @@ vector<double> scalar_mul(vector<double> v, double x);
 void list_matrix();
 void list_matrix(vector<vector<double>> m);
 void create_matrix();
+void transpose();
+vector<vector<double>> transpose(vector<vector<double>> m);
 void gauss();
-vector<vector<double>> gauss(vector<vector<double>> m);
+vector<vector<double>> gauss_for_determinant(vector<vector<double>> m);
 void determinant();
 void save(vector<vector<double>> m);
 vector<vector<double>> cleanup_matrix(vector<vector<double>> m);
@@ -24,7 +26,7 @@ vector<vector<double>> cleanup_matrix(vector<vector<double>> m);
 int main(){
     create_matrix();
     for(;;){
-        cout << "1. List the matrix in memory\n2. Gauss\n3. Determinant\n0. Type in new matrix\n";
+        cout << "1. List the matrix in memory\n2. Gauss\n3. Determinant\n4. Transpose\n0. Type in new matrix\n";
         char inp;
         cout << ">";
         cin >> inp;
@@ -39,6 +41,9 @@ int main(){
             break;
         case '3':
             determinant();
+            break;
+        case '4':
+            transpose();
             break;
         case '0':
             create_matrix();
@@ -84,6 +89,7 @@ void list_matrix(vector<vector<double>> m){
 }
 
 void create_matrix(){
+    system("CLS");
     cout << "Type in matrix dimensions: IxJ \n";
     cout << "I > ";
     cin >> i_dim;
@@ -104,6 +110,26 @@ void create_matrix(){
         system("CLS");
     }
     matrix = m;
+}
+
+void transpose() {
+    vector<vector<double>> trans_m = matrix;
+    for (int i = 0; i < i_dim; i++) {
+        for (int j = 0; j < j_dim; j++) {
+            trans_m[i][j] = matrix[j][i];
+        }
+    }
+    list_matrix(trans_m);
+}
+
+vector<vector<double>> transpose(vector<vector<double>> m) {
+    vector<vector<double>> trans_m = m;
+    for (int i = 0; i < i_dim; i++) {
+        for (int j = 0; j < j_dim; j++) {
+            trans_m[i][j] = m[j][i];
+        }
+    }
+    return trans_m;
 }
 
 void gauss() {
@@ -127,20 +153,7 @@ void gauss() {
     list_matrix(m);
 }
 
-//void gauss(){
-//    vector<vector<double>> m = matrix;
-//
-//
-//    for(int i = 0;i<(i_dim - 1);i++){
-//        for(int j = i_dim - 1; j > i; j--){ 
-//            double ratio = m[j][i]/m[i][i];
-//            m[j] = add(scalar_mul(m[i],ratio*-1),m[j]);
-//        }
-//    }
-//    list_matrix(m);
-//}
-
-vector<vector<double>> gauss(vector<vector<double>> m){ //used to calculate the determinant, changes matrix_sign accordingly
+vector<vector<double>> gauss_for_determinant(vector<vector<double>> m){ //used to calculate the determinant, changes matrix_sign accordingly
 
     int place = i_dim - 1;
     for (int i = 0; i < (i_dim - 1); i++) {
@@ -162,14 +175,13 @@ vector<vector<double>> gauss(vector<vector<double>> m){ //used to calculate the 
 }
 
 void determinant(){
-    vector<vector<double>> m = gauss(matrix);
+    vector<vector<double>> m = gauss_for_determinant(matrix);
     double det = 1.0;
     for(int i = 0;i<i_dim;i++){
         det *= m[i][i];
     }
     cout << "Determinant equals: " << det * matrix_sign<< "\n";
     matrix_sign = 1;
-    
 }
 
 void save(vector<vector<double>> m){
