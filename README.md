@@ -1,8 +1,8 @@
 Features:
--Gauss elimination
+-Gauss elimination <br />
 -Determinant
-
+<br />
 Coming:
--inverse matrix
--rank of a matrix
+-inverse matrix <br />
+-rank of a matrix <br />
 -kernel and image of lineaar transformation
