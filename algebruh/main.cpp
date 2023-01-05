@@ -24,6 +24,7 @@ void gauss();
 vector<vector<double>> gauss_for_determinant(vector<vector<double>> m);
 void determinant();
 double determinant(vector<vector<double>> m);
+vector<vector<vector<double>>> gauss_for_inversion(vector<vector<double>> m, vector<vector<double>> inv_m);
 int inverse_matrix();
 void save(vector<vector<double>> m);
 vector<vector<double>> cleanup_matrix(vector<vector<double>> m);
@@ -241,15 +242,7 @@ double determinant(vector<vector<double>> m) {
     return det;
 }
 
-int inverse_matrix() {
-    if (determinant(matrix) == 0) {
-        cout << "Inverse matrix doesnt exist when the determinant equals 0\n";
-        return -1;
-    }
-    vector<vector<double>> m = matrix;
-    vector<vector<double>> inv_m = create_id(i_dim,j_dim);
-
-
+vector<vector<vector<double>>> gauss_for_inversion(vector<vector<double>> m, vector<vector<double>> inv_m) {
     int place = i_dim - 1;
     for (int i = 0; i < (i_dim - 1); i++) {
         for (int j = i_dim - 1; j > i; j--) {
@@ -275,31 +268,23 @@ int inverse_matrix() {
     m = flip_180(m);
     inv_m = flip_180(inv_m);
 
-    place = i_dim - 1;
-    for (int i = 0; i < (i_dim - 1); i++) {
-        for (int j = i_dim - 1; j > i; j--) {
-            if (m[i][i] == 0) {
-                vector<double> temp = m[i];
-                vector<double> temp_inv = inv_m[i];
+    vector<vector<vector<double>>> return_vec = { m,inv_m };
+    return return_vec;
+}
 
-                m[i] = m[place];
-                inv_m[i] = inv_m[place];
-
-                m[place] = temp;
-                inv_m[place] = temp_inv;
-                place -= 1;
-            }
-            double ratio = m[j][i] / m[i][i];
-            m[j] = add(scalar_mul(m[i], ratio * -1), m[j]);
-            inv_m[j] = add(scalar_mul(inv_m[i], ratio * -1), inv_m[j]);
-        }
-        place = i_dim - 1;
+int inverse_matrix() {
+    if (determinant(matrix) == 0) {
+        cout << "Inverse matrix doesnt exist when the determinant equals 0\n";
+        return -1;
     }
-    m = cleanup_matrix(m);
-    inv_m = cleanup_matrix(inv_m);
-    m = flip_180(m);
-    inv_m = flip_180(inv_m);
+    vector<vector<double>> m = matrix;
+    vector<vector<double>> inv_m = create_id(i_dim,j_dim);
 
+    for (int i = 0; i < 2; i++) {
+        vector<vector<vector<double>>> matrix_vector = gauss_for_inversion(m, inv_m);
+        m = matrix_vector[0];
+        inv_m = matrix_vector[1];
+    }
 
     for (int i = 0; i < i_dim; i++) {
         for (int j = 0; j < j_dim; j++) {
