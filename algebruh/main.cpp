@@ -1,4 +1,3 @@
-//TODO priorytet //// popraw gauus for inversion tak samo jak pozosta³e gaussy //// :  sprawdzanie rzedu, jadro i obraz
 #include <iostream>
 #include <string>
 #include <vector>
@@ -6,8 +5,8 @@
 using namespace std;
 
 vector<vector<double>> matrix = {};
-int i_dim = 0; //      tu powinno byæ 0 !!! (tylko 6 do debugga)
-int j_dim = 0; //      tu powinno byæ 0 !!! (tylko 6 do debugga)
+int i_dim = 0;
+int j_dim = 0;
 int matrix_sign = 1;
 
 
@@ -86,13 +85,7 @@ vector<double> scalar_mul(vector<double> v, double x){
 void list_matrix(){
     for(vector<double> row : matrix){
         for(double element : row){
-            if (1 == 2/*element != floor(element)*/) {
-                vector<int64_t> vec = to_fraction(element);
-                cout << vec[0] << "/" << vec[1];
-            }
-            else {
-                cout << element << " ";
-            }
+            cout << element << " ";
         }
         cout << "\n";
     }
@@ -101,13 +94,7 @@ void list_matrix(){
 void list_matrix(vector<vector<double>> m){
     for(vector<double> row : m){
         for(double element : row){
-            if (1 == 2/*element != floor(element)*/) {
-                vector<int64_t> vec = to_fraction(element);
-                cout << vec[0] << "/" << vec[1] << " ";
-            }
-            else {
-                cout << element << " ";
-            }
+            cout << element << " ";
         }
         cout << "\n";
     }
