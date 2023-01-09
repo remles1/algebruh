@@ -20,7 +20,6 @@ vector<vector<double>> create_id(int x, int y);
 void transpose();
 vector<vector<double>> flip_180(vector<vector<double>> m);
 vector<vector<double>> transpose(vector<vector<double>> m);
-void gauss_new();
 void gauss();
 vector<vector<double>> gauss_for_determinant(vector<vector<double>> m);
 void determinant();
