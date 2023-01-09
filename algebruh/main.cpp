@@ -182,17 +182,6 @@ vector<vector<double>> transpose(vector<vector<double>> m) {
     return trans_m;
 }
 
-//void gauss_new() {
-//    vector<vector<double>> m = matrix;
-//    for (int i = 0; i < (i_dim - 1); i++) {
-//        for (int j = i + 1; j <= (i_dim - 1); j++) {
-//            double ratio = m[j][i] / m[i][i];
-//            m[j] = add(scalar_mul(m[i], ratio * -1), m[j]);
-//        }
-//    }
-//    list_matrix(m);
-//}
-
 void gauss() {
     vector<vector<double>> m = matrix;
 
