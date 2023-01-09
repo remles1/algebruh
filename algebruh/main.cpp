@@ -1,4 +1,4 @@
-//TODO sprawdzanie rzedu, jadro i obraz
+//TODO priorytet //// popraw gauus for inversion tak samo jak pozosta³e gaussy //// :  sprawdzanie rzedu, jadro i obraz
 #include <iostream>
 #include <string>
 #include <vector>
@@ -6,8 +6,8 @@
 using namespace std;
 
 vector<vector<double>> matrix = {};
-int i_dim = 0;
-int j_dim = 0;
+int i_dim = 0; //      tu powinno byæ 0 !!! (tylko 6 do debugga)
+int j_dim = 0; //      tu powinno byæ 0 !!! (tylko 6 do debugga)
 int matrix_sign = 1;
 
 
@@ -21,6 +21,7 @@ vector<vector<double>> create_id(int x, int y);
 void transpose();
 vector<vector<double>> flip_180(vector<vector<double>> m);
 vector<vector<double>> transpose(vector<vector<double>> m);
+void gauss_new();
 void gauss();
 vector<vector<double>> gauss_for_determinant(vector<vector<double>> m);
 void determinant();
@@ -33,6 +34,7 @@ vector<int64_t> to_fraction(double n);
 
 int main(){
     create_matrix();
+    //matrix = { {1 ,2, 4, 5, 8, 9}, {7, 6, 5, 3, 2, 5},{ 2, 4, 8, 5, 7, 8 },{6, 2, 5, 1, 2, 3 },{4, 5, 7, 8, 5, 9 },{6, 4, 1, 0, 2, 0} };
     for(;;){
         cout << "1. List the matrix in memory\n2. Gauss\n3. Determinant\n4. Transpose\n5. Invert matrix\n0. Type in new matrix\n";
         char inp;
@@ -84,7 +86,13 @@ vector<double> scalar_mul(vector<double> v, double x){
 void list_matrix(){
     for(vector<double> row : matrix){
         for(double element : row){
-            cout << element << " ";
+            if (1 == 2/*element != floor(element)*/) {
+                vector<int64_t> vec = to_fraction(element);
+                cout << vec[0] << "/" << vec[1];
+            }
+            else {
+                cout << element << " ";
+            }
         }
         cout << "\n";
     }
@@ -93,7 +101,13 @@ void list_matrix(){
 void list_matrix(vector<vector<double>> m){
     for(vector<double> row : m){
         for(double element : row){
-            cout << element << " ";
+            if (1 == 2/*element != floor(element)*/) {
+                vector<int64_t> vec = to_fraction(element);
+                cout << vec[0] << "/" << vec[1] << " ";
+            }
+            else {
+                cout << element << " ";
+            }
         }
         cout << "\n";
     }
@@ -181,43 +195,68 @@ vector<vector<double>> transpose(vector<vector<double>> m) {
     return trans_m;
 }
 
+//void gauss_new() {
+//    vector<vector<double>> m = matrix;
+//    for (int i = 0; i < (i_dim - 1); i++) {
+//        for (int j = i + 1; j <= (i_dim - 1); j++) {
+//            double ratio = m[j][i] / m[i][i];
+//            m[j] = add(scalar_mul(m[i], ratio * -1), m[j]);
+//        }
+//    }
+//    list_matrix(m);
+//}
+
 void gauss() {
     vector<vector<double>> m = matrix;
 
-    int place = i_dim - 1;
+
     for (int i = 0; i < (i_dim - 1); i++) {
-        for (int j = i_dim - 1; j > i; j--) {
+        for (int j = i + 1; j <= (i_dim - 1); j++) {
+            int swap_row_id = -1;
             if (m[i][i] == 0) {
-                vector<double> temp = m[i];
-                m[i] = m[place];
-                m[place] = temp;
-                place -= 1;
+                for (int k = i; k < i_dim - 1; k++) {
+                    if (m[k][i] != 0) {
+                        swap_row_id = k;
+                        break;
+                    }
+                }
+                if (swap_row_id != -1) {
+                    vector<double> temp = m[i];
+                    m[i] = m[swap_row_id];
+                    m[swap_row_id] = temp;
+                }
             }
             double ratio = m[j][i] / m[i][i];
             m[j] = add(scalar_mul(m[i], ratio * -1), m[j]);
         }
-        place = i_dim - 1;
+
     }
     m = cleanup_matrix(m);
     list_matrix(m);
 }
 
-vector<vector<double>> gauss_for_determinant(vector<vector<double>> m){ //used to calculate the determinant, changes matrix_sign accordingly
-
-    int place = i_dim - 1;
+vector<vector<double>> gauss_for_determinant(vector<vector<double>> m){ //used to calculate the determinant, changes matrix_sign accordingly    
     for (int i = 0; i < (i_dim - 1); i++) {
-        for (int j = i_dim - 1; j > i; j--) {
+        for (int j = i + 1; j <= (i_dim - 1); j++) {
+            int swap_row_id = -1;
             if (m[i][i] == 0) {
-                vector<double> temp = m[i];
-                m[i] = m[place];
-                m[place] = temp;
-                place -= 1;
-                matrix_sign *= -1;
+                for (int k = i; k < i_dim - 1; k++) {
+                    if (m[k][i] != 0) {
+                        swap_row_id = k;
+                        break;
+                    }
+                }
+                if (swap_row_id != -1) {
+                    vector<double> temp = m[i];
+                    m[i] = m[swap_row_id];
+                    m[swap_row_id] = temp;
+                    matrix_sign *= -1;
+                }
             }
             double ratio = m[j][i] / m[i][i];
             m[j] = add(scalar_mul(m[i], ratio * -1), m[j]);
         }
-        place = i_dim - 1;
+
     }
     m = cleanup_matrix(m);
     return m;
@@ -247,23 +286,30 @@ double determinant(vector<vector<double>> m) {
 vector<vector<vector<double>>> gauss_for_inversion(vector<vector<double>> m, vector<vector<double>> inv_m) {
     int place = i_dim - 1;
     for (int i = 0; i < (i_dim - 1); i++) {
-        for (int j = i_dim - 1; j > i; j--) {
+        for (int j = i + 1; j <= (i_dim - 1); j++) {
+            int swap_row_id = -1;
             if (m[i][i] == 0) {
-                vector<double> temp = m[i];
-                vector<double> temp_inv = inv_m[i];
+                for (int k = i; k < i_dim - 1; k++) {
+                    if (m[k][i] != 0) {
+                        swap_row_id = k;
+                        break;
+                    }
+                }
+                if (swap_row_id != -1) {
+                    vector<double> temp = m[i];
+                    m[i] = m[swap_row_id];
+                    m[swap_row_id] = temp;
 
-                m[i] = m[place];
-                inv_m[i] = inv_m[place];
-
-                m[place] = temp;
-                inv_m[place] = temp_inv;
-                place -= 1;
+                    vector<double> temp_inv = inv_m[i];
+                    inv_m[i] = inv_m[swap_row_id];
+                    inv_m[swap_row_id] = temp_inv;
+                }
             }
             double ratio = m[j][i] / m[i][i];
             m[j] = add(scalar_mul(m[i], ratio * -1), m[j]);
             inv_m[j] = add(scalar_mul(inv_m[i], ratio * -1), inv_m[j]);
         }
-        place = i_dim - 1;
+
     }
     m = cleanup_matrix(m);
     inv_m = cleanup_matrix(inv_m);
