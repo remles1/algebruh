@@ -1,8 +1,3 @@
-//TODO zrob tak zeby mozna bylo miec 0 na pierwzym wierszu, oraz jak nie ma liczby na ktorej moze byc *ratio* to skip petli
-// ta macierz nie dziala :
-//0	2	3
-//0	4	3
-//4	7	6
 #include <iostream>
 #include <string>
 #include <vector>
@@ -26,9 +21,9 @@ vector<vector<double>> flip_180(vector<vector<double>> m);
 vector<vector<double>> transpose(vector<vector<double>> m);
 void gauss();
 vector<vector<double>> gauss_for_determinant(vector<vector<double>> m);
+vector<vector<vector<double>>> gauss_for_inversion(vector<vector<double>> m, vector<vector<double>> inv_m);
 void determinant();
 double determinant(vector<vector<double>> m);
-vector<vector<vector<double>>> gauss_for_inversion(vector<vector<double>> m, vector<vector<double>> inv_m);
 int inverse_matrix();
 void save(vector<vector<double>> m);
 vector<vector<double>> cleanup_matrix(vector<vector<double>> m);
@@ -248,27 +243,6 @@ vector<vector<double>> gauss_for_determinant(vector<vector<double>> m){ //used t
     return m;
 }
 
-void determinant(){
-    vector<vector<double>> m = gauss_for_determinant(matrix);
-    double det = 1.0;
-    for(int i = 0;i<i_dim;i++){
-        det *= m[i][i];
-    }
-    cout << "Determinant equals: " << det * matrix_sign<< "\n";
-    matrix_sign = 1;
-}
-
-double determinant(vector<vector<double>> m) {
-    m = gauss_for_determinant(m);
-    double det = 1.0;
-    for (int i = 0; i < i_dim; i++) {
-        det *= m[i][i];
-    }
-    det *= matrix_sign;
-    matrix_sign = 1;
-    return det;
-}
-
 vector<vector<vector<double>>> gauss_for_inversion(vector<vector<double>> m, vector<vector<double>> inv_m) {
     int place = i_dim - 1;
     for (int i = 0; i < (i_dim - 1); i++) {
@@ -307,6 +281,27 @@ vector<vector<vector<double>>> gauss_for_inversion(vector<vector<double>> m, vec
 
     vector<vector<vector<double>>> return_vec = { m,inv_m };
     return return_vec;
+}
+
+void determinant(){
+    vector<vector<double>> m = gauss_for_determinant(matrix);
+    double det = 1.0;
+    for(int i = 0;i<i_dim;i++){
+        det *= m[i][i];
+    }
+    cout << "Determinant equals: " << det * matrix_sign<< "\n";
+    matrix_sign = 1;
+}
+
+double determinant(vector<vector<double>> m) {
+    m = gauss_for_determinant(m);
+    double det = 1.0;
+    for (int i = 0; i < i_dim; i++) {
+        det *= m[i][i];
+    }
+    det *= matrix_sign;
+    matrix_sign = 1;
+    return det;
 }
 
 int inverse_matrix() {
