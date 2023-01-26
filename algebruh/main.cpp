@@ -4,8 +4,8 @@
 using namespace std;
 
 vector<vector<double>> matrix = {};
-int i_dim = 0;
-int j_dim = 0;
+int i_dim = 3;
+int j_dim = 3;
 int matrix_sign = 1;
 
 
@@ -20,8 +20,10 @@ void transpose();
 vector<vector<double>> flip_180(vector<vector<double>> m);
 vector<vector<double>> transpose(vector<vector<double>> m);
 void gauss();
+vector<vector<double>> gauss(vector<vector<double>> m);
 vector<vector<double>> gauss_for_determinant(vector<vector<double>> m);
 vector<vector<vector<double>>> gauss_for_inversion(vector<vector<double>> m, vector<vector<double>> inv_m);
+void rank();
 void determinant();
 double determinant(vector<vector<double>> m);
 int inverse_matrix();
@@ -30,8 +32,8 @@ vector<vector<double>> cleanup_matrix(vector<vector<double>> m);
 vector<int64_t> to_fraction(double n);
 
 int main(){
-    create_matrix();
-    //matrix = { {0,2,3},{0,4,3},{4,7,6} };
+    //create_matrix();
+    matrix = { {1,2,3},{1,2,4},{1,2,5}};
     //matrix = { {1 ,2, 4, 5, 8, 9}, {7, 6, 5, 3, 2, 5},{ 2, 4, 8, 5, 7, 8 },{6, 2, 5, 1, 2, 3 },{4, 5, 7, 8, 5, 9 },{6, 4, 1, 0, 2, 0} };
     for(;;){
         cout << "1. List the matrix in memory\n2. Gauss\n3. Determinant\n4. Transpose\n5. Invert matrix\n0. Type in new matrix\n";
@@ -123,7 +125,7 @@ void create_matrix(){
     matrix = m;
 }
 
-vector<vector<double>> matrix_container(int x, int y) { //dokoncz
+vector<vector<double>> matrix_container(int x, int y) {
     vector<vector<double>> m = {};
     for (int i = 0; i < x; i++) {
         vector<double> row = {};
@@ -132,7 +134,7 @@ vector<vector<double>> matrix_container(int x, int y) { //dokoncz
         }
         m.push_back(row);
     }
-    return m; //do zmiany
+    return m;
 }
 
 vector<vector<double>> create_id(int x, int y) {
@@ -213,6 +215,35 @@ void gauss() {
     list_matrix(m);
 }
 
+vector<vector<double>> gauss(vector<vector<double>> m) {
+    for (int i = 0; i < (i_dim - 1); i++) {
+        for (int j = i + 1; j <= (i_dim - 1); j++) {
+            int swap_row_id = -1;
+            if (m[i][i] == 0) {
+                for (int k = i; k <= i_dim - 1; k++) {
+                    if (m[k][i] != 0) {
+                        swap_row_id = k;
+                        break;
+                    }
+                }
+                if (swap_row_id != -1) {
+                    vector<double> temp = m[i];
+                    m[i] = m[swap_row_id];
+                    m[swap_row_id] = temp;
+                }
+                else {
+                    break;
+                }
+            }
+            double ratio = m[j][i] / m[i][i];
+            m[j] = add(scalar_mul(m[i], ratio * -1), m[j]);
+        }
+
+    }
+    m = cleanup_matrix(m);
+    return m;
+}
+
 vector<vector<double>> gauss_for_determinant(vector<vector<double>> m){ //used to calculate the determinant, changes matrix_sign accordingly    
     for (int i = 0; i < (i_dim - 1); i++) {
         for (int j = i + 1; j <= (i_dim - 1); j++) {
@@ -281,6 +312,10 @@ vector<vector<vector<double>>> gauss_for_inversion(vector<vector<double>> m, vec
 
     vector<vector<vector<double>>> return_vec = { m,inv_m };
     return return_vec;
+}
+
+void rank() {
+
 }
 
 void determinant(){
