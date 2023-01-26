@@ -4,8 +4,8 @@
 using namespace std;
 
 vector<vector<double>> matrix = {};
-int i_dim = 3;
-int j_dim = 3;
+int i_dim = 0;
+int j_dim = 0;
 int matrix_sign = 1;
 
 
@@ -32,8 +32,8 @@ vector<vector<double>> cleanup_matrix(vector<vector<double>> m);
 vector<int64_t> to_fraction(double n);
 
 int main(){
-    //create_matrix();
-    matrix = { {1,2,3},{1,2,4},{1,2,5}};
+    create_matrix();
+    //matrix = { {1,2,3},{1,2,4},{1,2,5}};
     //matrix = { {1 ,2, 4, 5, 8, 9}, {7, 6, 5, 3, 2, 5},{ 2, 4, 8, 5, 7, 8 },{6, 2, 5, 1, 2, 3 },{4, 5, 7, 8, 5, 9 },{6, 4, 1, 0, 2, 0} };
     for(;;){
         cout << "1. List the matrix in memory\n2. Gauss\n3. Determinant\n4. Transpose\n5. Invert matrix\n0. Type in new matrix\n";
